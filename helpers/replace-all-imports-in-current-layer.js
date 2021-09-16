@@ -1,6 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-const variables = require('./variables')
 const constants = require('./constants')
 const findFile = require('./find-file')
 const updateImportObjectLocationInTarget = require('./update-import-object-location-in-target')
@@ -20,7 +19,7 @@ async function replaceAllImportsInCurrentLayerInner(i, importObjs, updatedFileCo
 	}
 
 	let importObj = importObjs[i]
-	const { importedSrcFiles } = variables
+	const importedSrcFiles = {}
 	let _updatedFileContent
 
 	//replace contracts aliases

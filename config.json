@@ -1,4 +1,4 @@
 {
 	"inputFilePath": "./demo/src/Oracles.sol",
-	"outputDir": "./out"
+	"outputFilePath": "./demo/out/Oracles-flat.sol"
 }

@@ -1,7 +1,9 @@
 #! /usr/bin/env node
+
+const path = require('path')
 const fs = require('fs')
-const glob = require('glob-promise')
-const variables = require('./helpers/variables')
+
+const { processVariables } = require('./helpers/variables')
 const log = require('./helpers/logger')
 const constants = require('./helpers/constants')
 const cleanPath = require('./helpers/clean-path')
@@ -12,24 +14,31 @@ const {
 	deduplicateLicenses
 } = require('./helpers/deduplicate-lines')
 
-flatten()
+async function main(args) {
+	// Get the processed variables.
+	const variables = processVariables(args)
 
-async function flatten() {
-	const inputFileContent = await fs.readFileSync(variables.inputFilePath, 'utf8')
-	let dir = variables.parentDir + constants.SLASH
+	// Flatten the contract.
+	const outputFileContent = await flatten(variables.inputFilePath)
+
+	if (!fs.existsSync(variables.outputDir)) fs.mkdirSync(variables.outputDir, { recursive: true })
+	const fileName = variables.outputFilePath ? path.basename(variables.outputFilePath) : `${variables.flatContractPrefix}-flat.sol`
+	const filePath = `${variables.outputDir}/${fileName}`
+	fs.writeFileSync(filePath, outputFileContent)
+	log.info(`Success! Flat file ${fileName} is generated to  ${variables.outputDir} directory.`)
+}
+
+async function flatten(inputFilePath) {
+	const inputFileContent = fs.readFileSync(inputFilePath, 'utf8')
+
+	let dir = path.dirname(inputFilePath) + constants.SLASH
 	const isAbsolutePath = !dir.startsWith(constants.DOT)
 	if (!isAbsolutePath) {
 		dir = __dirname + constants.SLASH + dir
 	}
 	dir = cleanPath(dir)
-	const path = variables.parentDir + constants.SOL
-	const srcFiles = await getSourceFiles(dir, path)
-	variables.srcFiles = srcFiles
-	await replaceImports(inputFileContent, dir)
-}
 
-async function getSourceFiles(dir, path) {
-	return await glob(path)
+	return await replaceImports(inputFileContent, dir)
 }
 
 async function replaceImports(inputFileContent, dir) {
@@ -39,9 +48,7 @@ async function replaceImports(inputFileContent, dir) {
 	outputFileContent = deduplicateSolidityVersoins(outputFileContent)
 	outputFileContent = deduplicateSolidityExpHeaders(outputFileContent)
 
-	if (!fs.existsSync(variables.outDir)) fs.mkdirSync(variables.outDir)
-	const fileName = `${variables.flatContractPrefix}_flat.sol`
-	const filePath = `${variables.outDir}/${fileName}`
-	fs.writeFileSync(filePath, outputFileContent)
-	log.info(`Success! Flat file ${fileName} is generated to  ${variables.outDir} directory`)
+	return outputFileContent
 }
+
+module.exports = { flatten, main }

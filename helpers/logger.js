@@ -1,4 +1,9 @@
 let bunyan = require('bunyan')
-let log = bunyan.createLogger({name: 'solidity-flattener'})
+
+const level = process.env.DEBUG_LEVEL || 'error'
+let log = bunyan.createLogger({
+	name: 'solidity-flattener',
+	level
+})
 
 module.exports = log

@@ -8,55 +8,95 @@
 
 ### Installation from npm
 
-`npm i @poanet/solidity-flattener`
+```bash
+npm install https://github.com/vulcanize/solidity-flattener.git
+```
 
-### Usage
+#### Usage
 
-`./node_modules/.bin/poa-solidity-flattener ./contracts/example.sol`
+* CLI:
 
-It will save flattened source of Solidity smart-contract into `./out` directory
+  ```bash
+  npm run solidity-flattener [input-file-path] [output-file-path]
+  ```
+    
+    * `input-file-path`: Input contract file path.
+    * `output-file-path`: Flattened contract output file path (default: appends `-flat` to input filename).
+
+  Arguments are taken from `config.json` if not provided.
+
+  Example:
+
+  ```bash
+  npm run solidity-flattener ./contracts/ERC20/ERC20.sol ./out/ERC20-flat.sol
+  ```
+
+* As a package:
+
+  Example:
+
+  ```
+  const { flatten } = require('@poanet/solidity-flattener')
+
+  const inputFile = './contracts/ERC20/ERC20.sol'
+  const flatContract = flatten(inputFile)
+  console.log(flatContract)
+  ```
 
 ### Installation from source
 
-
 ```
-git clone https://github.com/poanetwork/solidity-flattener
+git clone https://github.com/vulcanize/solidity-flattener
 cd solidity-flattener
 npm install
 ```
 
-You can start script either
+#### Usage
+
+You can start the script with:
 
 ```
-npm start "path_to_not_flat_contract_definition_file.sol"
+npm start [input-file-path] [output-file-path]
 ```
 
-or without paramaters (path to input file will be extracted from `./config.json`)
+  * `input-file-path`: Input contract file path.
+  * `output-file-path`: Flattened contract output file path (default: appends `-flat` to input filename).
+
+Arguments are taken from `config.json` if not provided.
+
+Examples:
 
 ```
+# Saves the flattened contract at the provided output-file-path.
+npm start ./contracts/ERC20/ERC20.sol ./out/ERC20-flat.sol
+```
+
+```
+# Saves the flattened contract at the provided output-file-path in config.json.
 npm start
 ```
 
-
-
-Expected result: 
+If there is no `output-file-path` in `config.json`:
 
 ```
-Success! Flat file ORIGINAL_FILE_NAME_flat.sol is generated to ./out directory
+# Saves the flattened contract at `./Oracles-flat.sol`
+npm start ./demo/src/Oracles.sol
 ```
 
-`./flatContract.sol` - flat .sol file is created in output directory (`./out/` by default)
-
-**Note:** *utility doesn't support aliases at import statements*
+**Note:** *Utility doesn't support aliases at import statements.*
 
 ## Config
 
-path `./config.json`
+* Path: `./config.json`
+* Fields:
+    * `input-file-path`: Input contract file path.
+    * `output-file-path`: Flattened contract output file path.
 
-```
-{
-	"inputFilePath": "./demo/src/Oracles.sol",
-	"outputDir": "./out"
-}
-```
+* Example:
 
+  ```
+  {
+    "inputFilePath": "./demo/src/Oracles.sol",
+    "outputFilePath": "./demo/out/Oracles-flat.sol"
+  }
+  ```

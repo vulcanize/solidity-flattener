@@ -12,20 +12,23 @@ function processVariables(args) {
 		config = JSON.parse(fs.readFileSync(configPath, constants.UTF8))
 	}
 
-	// Get file paths.
+	// Get file paths. Resolution order: Command line args, config, defaults.
 	const inputFilePath = args.length > 0 ? args[0] : config ? config.inputFilePath : constants.EMPTY
 	const outputFilePath = args.length > 1 ? args[1] : config ? config.outputFilePath : constants.EMPTY
 
-	// Output directory to store flat combined solidity file
-	let outputDir = path.dirname(outputFilePath)
+	// Output directory to store flat combined solidity file.
+	const outputDir = path.dirname(outputFilePath)
 
 	// Extracting filename for output file if outputFilePath not given.
-	let flatContractPrefix = path.basename(inputFilePath, '.sol')
+	const flatContractPrefix = path.basename(inputFilePath, '.sol')
+
+	const importedSrcFiles = {}
 
 	const variables = {
 		inputFilePath,
 		outputFilePath,
 		outputDir,
+		importedSrcFiles,
 		flatContractPrefix
 	}
 

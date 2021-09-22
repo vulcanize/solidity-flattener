@@ -3,6 +3,8 @@ const fs = require('fs')
 
 const constants = require('./constants')
 
+let importedSrcFiles = {}
+
 function processVariables(args) {
 
 	const configPath = './config.json'
@@ -22,17 +24,14 @@ function processVariables(args) {
 	// Extracting filename for output file if outputFilePath not given.
 	const flatContractPrefix = path.basename(inputFilePath, '.sol')
 
-	const importedSrcFiles = {}
-
 	const variables = {
 		inputFilePath,
 		outputFilePath,
 		outputDir,
-		importedSrcFiles,
 		flatContractPrefix
 	}
 
 	return variables
 }
 
-module.exports = { processVariables }
+module.exports = { processVariables, importedSrcFiles }

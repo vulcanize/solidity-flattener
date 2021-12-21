@@ -1,7 +1,8 @@
 const fs = require('fs')
 const glob = require('glob-promise')
 const path = require('path')
-const { importedSrcFiles } = require('./variables')
+
+const { getImportedSrcFiles } = require('./variables')
 const constants = require('./constants')
 const changeRelativePathToAbsolute = require('./change-relative-path-to-absolute')
 
@@ -56,6 +57,9 @@ async function byNameAndReplaceInnerRecursively(importStatement, updatedFileCont
 }
 
 async function byNameAndReplaceInnerRecursivelyInner(importStatement, updatedFileContent, dir, dependencyPath, srcFiles, j, resolve, reject, importIsReplacedBefore) {
+	// Get the variable storing imported src files.
+	const importedSrcFiles = getImportedSrcFiles()
+
 	if (j >= srcFiles.length) return resolve({ flattenFileContent: updatedFileContent, importIsReplacedBefore })
 
 	let isAbsolutePath = !dependencyPath.startsWith(constants.DOT)

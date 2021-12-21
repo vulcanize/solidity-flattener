@@ -3,7 +3,7 @@
 const path = require('path')
 const fs = require('fs')
 
-const { processVariables } = require('./helpers/variables')
+const { processVariables, resetImportedSrcFiles } = require('./helpers/variables')
 const log = require('./helpers/logger')
 const constants = require('./helpers/constants')
 const replaceAllImportsRecursively = require('./helpers/replace-all-imports-recursively')
@@ -29,6 +29,9 @@ async function main(args) {
 }
 
 async function flatten(inputFilePath) {
+	// Reset the global variable to store imported source files.
+	resetImportedSrcFiles()
+
 	inputFilePath = path.resolve(inputFilePath)
 
 	const inputFileContent = fs.readFileSync(inputFilePath, 'utf8')

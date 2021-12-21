@@ -34,4 +34,12 @@ function processVariables(args) {
 	return variables
 }
 
-module.exports = { processVariables, importedSrcFiles }
+function resetImportedSrcFiles () {
+	importedSrcFiles = {}
+}
+
+function getImportedSrcFiles () {
+	return importedSrcFiles
+}
+
+module.exports = { processVariables, resetImportedSrcFiles, getImportedSrcFiles }

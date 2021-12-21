@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
-const { importedSrcFiles } = require('./variables')
+
+const { getImportedSrcFiles } = require('./variables')
 const constants = require('./constants')
 const findFile = require('./find-file')
 const updateImportObjectLocationInTarget = require('./update-import-object-location-in-target')
@@ -15,6 +16,9 @@ async function replaceAllImportsInCurrentLayer(i, importObjs, updatedFileContent
 }
 
 async function replaceAllImportsInCurrentLayerInner(i, importObjs, updatedFileContent, dir, resolve) {
+	// Get the variable storing imported src files.
+	const importedSrcFiles = getImportedSrcFiles()
+
 	if (i >= importObjs.length) {
 		return resolve(updatedFileContent)
 	}
